@@ -1,0 +1,18 @@
+td {border: 1px #DDD solid; padding: 5px; cursor: pointer;}
+
+
+.selected {
+    background-color: brown;
+    color: #FFF;
+}
+
+.selectedMarks {
+    background-color: brown;
+    color: #FFF;
+}
+
+.selectedOrders {
+    background-color: brown;
+    color: #FFF;
+}
+

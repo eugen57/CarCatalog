@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Car catalog</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="../service/UserService.js"></script>
+        <script src="../controllers/UserController.js"></script>
+        <script src="../controllers/aboutPageControllers.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+      
+        <link href="../lib/css/bootstrap.min.css" rel="stylesheet">
+        <link href="../lib/css/style.css" rel="stylesheet">
+        <link href="../lib/css/loginModal.css" rel="stylesheet">
+        <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+    </head>
+    <body>
+        <div id="header" class="container-fluid">
+            <div class="navbar navbar-inverse navbar-static-top" role="navigation">
+              <div class="container">
+                <div class="navbar-header">
+                  <button type="button" class="navbar-toggle" 
+                          data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Car catalog</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                  </button>
+                  <a class="navbar-brand" href="/CatalogAuto/index.html">Car catalog</a>
+                </div>
+                <div class="navbar-collapse collapse">
+                  <ul class="nav navbar-nav">
+                    <li><a href="/CatalogAuto/index.html">Home</a></li>
+                    <li><a href="" data-toggle="modal" data-target="#login-modal">Login</a></li>
+                    <li class="active"><a href="/CatalogAuto/view/about.html">About</a></li>
+                    <li><a href="/CatalogAuto/view/contacts.html">Contacts</a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+        </div>
+        <div id ="body" class="container-fluid">
+            <div class="row">
+                <div class="col-md-4 col-lg-4 col-sm-4 col-xs-4">
+                    <p><b>This is car catalog project</b></p>
+                </div>
+            </div>
+        </div>
+      <div id="footer" class="container-fluid">
+        <div class="text-center center-block">
+            <a href="https://www.facebook.com/bootsnipp">
+                <i id="social-fb" class="fa fa-facebook-square fa-3x social"></i>
+            </a>
+            <a href="https://twitter.com/bootsnipp">
+                <i id="social-tw" class="fa fa-twitter-square fa-3x social"></i>
+            </a>
+            <a href="https://plus.google.com/+Bootsnipp-page">
+                <i id="social-gp" class="fa fa-google-plus-square fa-3x social"></i>
+            </a>
+            <a href="mailto:bootsnipp@gmail.com">
+                <i id="social-em" class="fa fa-envelope-square fa-3x social"></i>
+            </a>
+         </div>
+      </div>
+        
+    <div class="modal fade" id="login-modal" tabindex="-1" role="dialog" 
+         aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+    	<div class="modal-dialog">
+            <div class="loginmodal-container">
+		<h1>Login to administrator account</h1><br>
+                <form id="loginModalForm" onsubmit="return ">
+                    <input type="text" id="userModal" name="name" placeholder="Username">
+                    <input type="password" id="passModal" name="password" placeholder="Password">
+                    <input type="submit" name="login" class="login loginmodal-submit" value="Login">
+		</form>
+					
+		<div class="login-help">
+                    <a href="#">Registration</a> - <a href="#">Forgot password?</a>
+		</div>
+            </div>
+        </div>
+    </div>    
+    
+        
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="../lib/js/bootstrap.min.js"></script>
+    
+    <script>
+        window.onload = function() {
+            $("#loginModalForm").submit(loginSumbit);
+        }
+    </script>
+
+    </body>
+ </html>
+

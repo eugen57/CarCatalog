@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Car catalog</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="service/CarService.js"></script>
+        <script src="controllers/CarController.js"></script>
+        <script src="model/Car.js"></script>
+        <script src="service/MarkService.js"></script>
+        <script src="controllers/MarkController.js"></script>
+        <script src="model/Mark.js"></script>
+        <script src="service/OrderService.js"></script>
+        <script src="controllers/OrderController.js"></script>
+        <script src="model/Order.js"></script>
+        <script src="service/UserService.js"></script>
+        <script src="controllers/UserController.js"></script>
+        <script src="controllers/indexPageControllers.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+      
+        <link href="lib/css/bootstrap.min.css" rel="stylesheet">
+        <link href="lib/css/style.css" rel="stylesheet">
+        <link href="lib/css/loginModal.css" rel="stylesheet">
+        <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+        <script type="text/javascript">
+            function actionClick(id){
+                var markController = new MarkController ();
+                markController.getMarkByIdDivList(id);
+            };
+            $(document).on("click", ".sendOrderDialog", function () {
+            var carId = $(this).data('id');
+            $(".modal-body #idCar").val(carId);
+            });
+        </script>
+    </head>
+    <body>
+        <div id="header" class="container-fluid">
+            <div class="navbar navbar-inverse navbar-static-top" role="navigation">
+              <div class="container">
+                <div class="navbar-header">
+                  <button type="button" class="navbar-toggle" 
+                          data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Car catalog</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                  </button>
+                  <a class="navbar-brand" href="index.html">Car catalog</a>
+                </div>
+                <div class="navbar-collapse collapse">
+                  <ul class="nav navbar-nav">
+                    <li class="active"><a href="index.html">Home</a></li>
+                    <li><a href="" data-toggle="modal" data-target="#login-modal">Login</a></li>
+                    <li><a href="/CatalogAuto/view/about.html">About</a></li>
+                    <li><a href="/CatalogAuto/view/contacts.html">Contacts</a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+        </div>
+        <div id ="body" class="container-fluid">
+            <div class="row">
+                <div  class="col-lg-2 col-md-2 col-sm-2 col-xs-2"></div>
+                <div id="mark" class="col-lg-2 col-md-2 col-sm-2 col-xs-2"></div>
+                <div id="auto" class="col-lg-6 col-md-6 col-sm-6 col-xs-6"></div>
+                <div  class="col-lg-2 col-md-2 col-sm-2 col-xs-2"></div>
+            </div>
+        </div>
+      <div id="footer" class="container-fluid">
+        <div class="text-center center-block">
+            <a href="https://www.facebook.com/bootsnipp">
+                <i id="social-fb" 
+                   class="fa fa-facebook-square fa-3x social">
+                </i>
+            </a>
+            <a href="https://twitter.com/bootsnipp">
+                <i id="social-tw" class="fa fa-twitter-square fa-3x social"></i>
+            </a>
+            <a href="https://plus.google.com/+Bootsnipp-page">
+                <i id="social-gp" class="fa fa-google-plus-square fa-3x social"></i>
+            </a>
+            <a href="mailto:bootsnipp@gmail.com">
+                <i id="social-em" class="fa fa-envelope-square fa-3x social"></i>
+            </a>
+         </div>
+      </div>
+    
+    <!-- modal -->   
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" 
+                    aria-hidden="true">&times;</button>
+            <h4 class="modal-title">Order</h4>
+          </div>
+          <div class="modal-body">
+            <p>Name</p><input id="name" type="text" class="form-control">  <br>
+            <p>Telephone</p><input id="telefon" type="text" class="form-control">  <br>
+            <input type="hidden" name="idCar" id="idCar" value="">
+          </div>
+          <div class="modal-footer">
+            <button type="button" id="orderSend" class="btn btn-primary" 
+                    data-dismiss="modal">Send an order</button>
+          </div>
+        </div>
+      </div>
+    </div>
+        
+    <div class="modal fade" id="login-modal" tabindex="-1" role="dialog" 
+         aria-hidden="true" style="display: none;">
+    	<div class="modal-dialog">
+            <div class="loginmodal-container">
+		<h1>Login to administrator account</h1><br>
+                <form id="loginModalForm" onsubmit="return ">
+                    <input type="text" id="userModal" name="name" 
+                           placeholder="Username">
+                    <input type="password" id="passModal" name="password" 
+                           placeholder="Password">
+                    <input type="submit" name="login" class="login loginmodal-submit" 
+                           value="Login">
+		</form>
+					
+		<div class="login-help">
+                    <a href="#">Registration</a> - <a href="#">Forgot password?</a>
+		</div>
+            </div>
+        </div>
+    </div>    
+        
+           
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="lib/js/bootstrap.min.js"></script>
+    <script src="lib/js/jquery.cookie.js"></script>
+        <script type="text/javascript">
+            window.onload = function () 
+            {
+                var markController = new MarkController ();
+                markController.getMarksWithoutCarsList();
+                
+                $("#loginModalForm").submit(loginSumbit);
+                $("#orderSend").click(actionOrderClick);
+            };
+        </script>
+    
+    </body>
+ </html>

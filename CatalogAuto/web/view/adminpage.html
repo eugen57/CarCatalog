@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Car catalog</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="../lib/css/bootstrap.min.css" rel="stylesheet">
+        <link href="../lib/css/style.css" rel="stylesheet">
+        <link href="../lib/css/adminPageTabs.css" rel="stylesheet">
+        <link href="../lib/css/insertUpdateDeleteModal.css" rel="stylesheet">
+        <link href="../lib/css/tableHighlight.css" rel="stylesheet" type="text/css">
+        <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+        
+        <script src="../controllers/adminpageControllers.js"></script>
+        <script src="../service/CarService.js"></script>
+        <script src="../controllers/CarController.js"></script>
+        <script src="../model/Car.js"></script>
+        <script src="../service/MarkService.js"></script>
+        <script src="../controllers/MarkController.js"></script>
+        <script src="../model/Mark.js"></script>
+        <script src="../service/OrderService.js"></script>
+        <script src="../controllers/OrderController.js"></script>
+        <script src="../model/Order.js"></script>
+        <script src="../lib/js/tableHighlight.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+        <script src="../lib/js/jquery.cookie.js"></script>
+        <script type='text/javascript'>
+            var cookie = $.cookie('catalogAutoLogin');
+            if(cookie==null) {
+                location.replace('/CatalogAuto/index.html');
+            }
+        </script>
+        <script type="text/javascript">
+            $(document).ready(function() {
+                $('a[data-toggle="tab"]').on('show.bs.tab', function(e) {
+                    localStorage.setItem('activeTab', $(e.target).attr('href'));
+                });
+                var activeTab = localStorage.getItem('activeTab');
+                if(activeTab){
+                    $('#adminTabs a[href="' + activeTab + '"]').tab('show');
+                } else {
+                    $('#carsTab').addClass('active');
+                }
+            });
+        </script>
+    </head>
+    
+    <body>
+        <div id="header" class="container-fluid">
+            <div class="navbar navbar-inverse navbar-static-top" role="navigation">
+              <div class="container">
+                <div class="navbar-header">
+                  <button type="button" class="navbar-toggle" data-toggle="collapse" 
+                          data-target=".navbar-collapse">
+                    <span class="sr-only">Car catalog</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                  </button>
+                  <a class="navbar-brand" href="/CatalogAuto/index.html">Car catalog</a>
+                </div>
+                <div class="navbar-collapse collapse">
+                  <ul class="nav navbar-nav">
+                    <li><a href="/CatalogAuto/index.html">Home</a></li>
+                    <li><a href="/CatalogAuto/view/about.html">About</a></li>
+                    <li><a href="/CatalogAuto/view/contacts.html">Contacts</a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+        </div>
+        <div id ="body" class="container-fluid">
+            <div class="row">
+                <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+                    <div class="panel with-nav-tabs panel-default">
+                        <div class="panel-heading">
+                            <ul class="nav nav-tabs" id="adminTabs">
+                                <li id="carsTab">
+                                    <a data-toggle="tab" href="#cars">Cars</a>
+                                </li>
+                                <li id="marksTab">
+                                    <a data-toggle="tab" href="#marks">Marks</a>
+                                </li>
+                                <li id="ordersTab">
+                                    <a data-toggle="tab" href="#orders">Orders</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="panel-body">
+                            <div class="tab-content">
+                                <div class="tab-pane fade in active" id="cars">
+                                    <div class="row">
+                                        <div class="col-md-1 col-lg-1 col-sm-1 col-xs-1">
+                                            <button type="button" class="btn btn-primary" 
+                                                    data-toggle="modal" 
+                                                    data-target="#carModalInsert"> Add car</button>
+                                        </div>
+                                        <div class="col-md-1 col-lg-1 col-sm-1 col-xs-1">
+                                            <button type="button" class="btn btn-primary" 
+                                                    data-toggle="modal" 
+                                                    data-target="#carModalUpdate">Update car</button>
+                                        </div>
+                                        <div class="col-md-1 col-lg-1 col-sm-1 col-xs-1">
+                                            <button type="button" class="btn btn-danger" 
+                                                    data-toggle="modal" 
+                                                    data-target="#carModalDelete">Delete car</button>
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <div class="row">
+                                        <div id="carsTableDiv" class="col-md-7 col-lg-7 col-sm-7 col-xs-7">
+                                            <table id='carsTable' class='table table-bordered'>
+                                            </table>
+                                        </div>
+                                        <div id="carImageDiv" class="col-md-5 col-lg-5 col-sm-5 col-xs-5">
+                                            <image id="carImage" class="img-responsive"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="marks">
+                                    <div class="row">
+                                        <div class="col-md-1 col-lg-1 col-sm-1 col-xs-1">
+                                            <button type="button" class="btn btn-primary" 
+                                                    data-toggle="modal" 
+                                                    data-target="#markModalInsert">Add mark</button>
+                                        </div>
+                                        <div class="col-md-1 col-lg-1 col-sm-1 col-xs-1">
+                                            <button type="button" class="btn btn-primary" 
+                                                    data-toggle="modal" 
+                                                    data-target="#markModalUpdate">Update mark</button>
+                                        </div>
+                                        <div class="col-md-1 col-lg-1 col-sm-1 col-xs-1">
+                                            <button type="button" class="btn btn-danger" 
+                                                    data-toggle="modal" 
+                                                    data-target="#markModalDelete">Delete mark</button>
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <div class="row">
+                                        <div id="marksTableDiv" class="col-md-8 col-lg-8 col-sm-8 col-xs-8">
+                                            <table id='marksTable' class='table table-bordered'>
+                                            </table>
+                                        </div>
+                                        <div id="markImageDiv" class="col-md-3 col-lg-3 col-sm-3 col-xs-3">
+                                            <image id="markImage" class="img-responsive"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="orders">
+                                    <div class="row">
+                                        <div class="col-md-1 col-lg-1 col-sm-1 col-xs-1">
+                                            <button type="button" class="btn btn-primary" 
+                                                    data-toggle="modal" 
+                                                    data-target="#orderModalUpdate">Update order</button>
+                                        </div>
+                                        <div class="col-md-1 col-lg-1 col-sm-1 col-xs-1">
+                                            <button type="button" class="btn btn-danger" 
+                                                    data-toggle="modal" 
+                                                    data-target="#orderModalDelete">Delete order</button>
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <div class="row">
+                                        <div id="ordersTableDiv" class="col-md-6 col-lg-6 col-sm-6 col-xs-6">
+                                            <table id="ordersTable" class="table table-bordered">
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    <div class="modal fade" id="carModalInsert" tabindex="-1" role="dialog" 
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">×</span>
+                        <span class="sr-only">Close</span>
+                    </button>
+                    <h3 class="modal-title">Add car</h3>
+                </div>
+                <div class="modal-body">
+
+                    <form method="POST" id="insertCarForm">
+                        <div class="form-group">
+                            <label>Mark</label>
+                            <select name="marksListInsert" class="form-control" 
+                                    id="marksListInsert" onchange="" >
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Model</label>
+                            <input type="text" class="form-control" 
+                                   id="carNameAdd" placeholder="Model">
+                        </div>
+                        <div class="form-group">
+                            <label>Year</label>
+                            <input type="text" class="form-control" id="carYearAdd" 
+                                   placeholder="Year">
+                        </div>
+                        <div class="form-group">
+                            <label>Price</label>
+                            <input type="text" 
+                                   class="form-control" 
+                                   id="carPriceAdd" 
+                                   placeholder="Price">
+                        </div>
+                        <div class="form-group">
+                            <label>Description</label>
+                            <input type="text" class="form-control" id="carDescriptionAdd" 
+                                   placeholder="Describe your car">
+                        </div>
+                        <div class="form-group">
+                            <label>Image input</label>
+                            <input type="file" id="carImageAdd" 
+                                   accept="image/png, image/gif, image/jpeg, image/jpg">
+                        </div>
+                        <div class="form-group">
+                            <input type="hidden" name="id" value="0" id="insertCarId"/>
+                        </div>
+
+                        <button type="submit" id="insertCarSubmit" 
+                                class="btn btn-primary">Submit</button>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+        
+    <div class="modal fade" id="carModalUpdate" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">×</span>
+                        <span class="sr-only">Close</span></button>
+                    <h3 class="modal-title">Update car</h3>
+                </div>
+                <div class="modal-body">
+
+                    <form id="updateCarForm">
+                        <div class="form-group">
+                            <label>Mark</label>
+                            <select name="marksListUpdate" class="form-control" 
+                                    id="marksListUpdate" onchange="" >
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Model</label>
+                            <input type="text" class="form-control" value="" 
+                                   id="carNameUpdate" placeholder="Model">
+                        </div>
+                        <div class="form-group">
+                            <label>Year</label>
+                            <input type="text" class="form-control" value="" 
+                                   id="carYearUpdate" placeholder="Year">
+                        </div>
+                        <div class="form-group">
+                            <label>Price</label>
+                            <input type="text" class="form-control" value="" 
+                                   id="carPriceUpdate" placeholder="Price">
+                        </div>
+                        <div class="form-group">
+                            <label>Description</label>
+                            <input type="text" class="form-control" value="" 
+                                   id="carDescriptionUpdate" 
+                                   placeholder="Describe your car">
+                        </div>
+                        <div class="form-group">
+                            <label>Image input</label>
+                            <input type="file" id="carImageUpdate" 
+                                   accept="image/png, image/gif, image/jpeg, image/jpg">
+                        </div>
+                        <div class="form-group">
+                            <input type="hidden" name="id" value="0" id="updateCarId"/>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+        
+    <div class="modal fade" id="carModalDelete" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">×</span>
+                        <span class="sr-only">Close</span>
+                    </button>
+                    <h3 class="modal-title">Delete car?</h3>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-1 col-lg-1 col-sm-1 col-xs-1">
+                            <form id="deleteCarForm" method="post">
+                                <input type="submit" value="Yes"/>
+                                <input type="hidden" name="id" value="0" id="deleteCarId"/>
+                            </form>
+                        </div>
+                        <div class="col-md-1 col-lg-1 col-sm-1 col-xs-1">
+                            <button type="submit" data-dismiss="modal">No</button>
+                        </div>
+                    </div>        
+                </div>
+            </div>
+        </div>
+    </div>
+     
+    <div class="modal fade" id="markModalInsert" tabindex="-1" role="dialog" 
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">×</span><span class="sr-only">Close</span>
+                        
+                    </button>
+                    <h3 class="modal-title">Add mark</h3>
+                </div>
+                <div class="modal-body">
+                    <form id="insertMarkForm" >
+                        <div class="form-group">
+                            <label>Mark name</label>
+                            <input type="text" class="form-control" 
+                                   id="markNameInsert" placeholder="Name">
+                        </div>
+                        <div class="form-group">
+                            <label>Description</label>
+                            <input type="text" class="form-control" 
+                                   id="markDescriptionInsert" placeholder="Description">
+                        </div>
+                        <div class="form-group">
+                            <label>Mark icon</label>
+                            <input type="file" id="markImageInsert" 
+                                   accept="image/png, image/gif, image/jpeg, image/jpg">
+                        </div>
+                        <div class="form-group">
+                            <input type="hidden" name="id" value="0" id="insertMarkId"/>
+                        </div>
+
+                        <button type="submit" id="insertMarkSubmit" 
+                                class="btn btn-primary">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+        
+    <div class="modal fade" id="markModalUpdate" tabindex="-1" role="dialog" 
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">×</span>
+                        <span class="sr-only">Close</span>
+                    </button>
+                    <h3 class="modal-title">Update mark</h3>
+                </div>
+                <div class="modal-body">
+                    <form id="updateMarkForm">
+                        <div class="form-group">
+                            <label>Mark name</label>
+                            <input type="text" class="form-control" 
+                                   id="markNameUpdate" placeholder="Name">
+                        </div>
+                        <div class="form-group">
+                            <label>Description</label>
+                            <input type="text" class="form-control" 
+                                   id="markDescriptionUpdate" placeholder="Description">
+                        </div>
+                        <div class="form-group">
+                            <label>Mark icon</label>
+                            <input type="file" id="markImageUpdate" 
+                                   accept="image/png, image/gif, image/jpeg, image/jpg">
+                        </div>
+                        <div class="form-group">
+                            <input type="hidden" name="id" value="0" id="updateMarkId"/>
+                        </div>
+
+                        <button type="submit" id="updateMarkSubmit" 
+                                class="btn btn-primary">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+        
+    <div class="modal fade" id="markModalDelete" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">×</span>
+                        <span class="sr-only">Close</span>
+                    </button>
+                    <h3 class="modal-title">Delete mark?</h3>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-1 col-lg-1 col-sm-1 col-xs-1">
+                            <form id="deleteMarkForm" method="post">
+                                <input type="submit" value="Yes"/>
+                                <input type="hidden" name="id" value="0" id="deleteMarkId"/>
+                            </form>
+                        </div>
+                        <div class="col-md-1 col-lg-1 col-sm-1 col-xs-1">
+                            <button type="submit" data-dismiss="modal">No</button>
+                        </div>
+                    </div>        
+                </div>
+            </div>
+        </div>
+    </div>
+        
+    <div class="modal fade" id="orderModalUpdate" tabindex="-1" role="dialog" 
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">×</span>
+                        <span class="sr-only">Close</span>
+                    </button>
+                    <h3 class="modal-title">Update order</h3>
+                </div>
+                <div class="modal-body">
+                    <form id="updateOrderForm">
+                        <div class="form-group">
+                            <label>Id_car</label>
+                            <select name="orderListIdCar" class="form-control" id="orderListIdCar" >
+                                
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Name</label>
+                            <input type="text" class="form-control" 
+                                   id="orderNameUpdate" placeholder="Name">
+                        </div>
+                        <div class="form-group">
+                            <label>Telephone</label>
+                            <input type="text" class="form-control" 
+                                   id="orderTelephoneUpdate" placeholder="Telephone">
+                        </div>
+                        <div class="form-group">
+                            <label>Status</label>
+                            <select name="ordersListUpdate" class="form-control" 
+                                    id="ordersListUpdate" >
+                                <option value='created' >
+                                    Created
+                                </option>
+                                <option value='registred' >
+                                    Registred
+                                </option>
+                                <option value='considered' >
+                                    Considered
+                                </option>
+                                <option value='closed' >
+                                    Closed
+                                </option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <input type="hidden" name="id" value="0" id="updateOrderId"/>
+                        </div>
+
+                        <button type="submit" id="updateOrderSubmit" 
+                                class="btn btn-primary">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+        
+        
+    <div class="modal fade" id="orderModalDelete" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">×</span>
+                        <span class="sr-only">Close</span>
+                    </button>
+                    <h3 class="modal-title" id="lineModalLabel">Delete order?</h3>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-1 col-lg-1 col-sm-1 col-xs-1">
+                            <form id="deleteOrderForm" method="post">
+                                <input type="submit" value="Yes"/>
+                                <input type="hidden" name="id" value="0" id="deleteOrderId"/>
+                            </form>
+                        </div>
+                        <div class="col-md-1 col-lg-1 col-sm-1 col-xs-1">
+                            <button type="submit" data-dismiss="modal">No</button>
+                        </div>
+                    </div>        
+                </div>
+            </div>
+        </div>
+    </div>
+        
+    
+    <div id="footer" class="container-fluid">
+    </div>
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="../lib/js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+         window.onload = function () 
+            {
+                var carController = new CarController();
+                var markController = new MarkController();
+                var orderController = new OrderController();
+                carController.getCarsTableForDiv("carsTable");
+                carController.getCarsSelectListForDiv("orderListIdCar");
+                markController.getMarksTableForDiv("marksTable");
+                markController.getMarksSelectListForDiv("marksListInsert");
+                markController.getMarksSelectListForDiv("marksListUpdate");
+                orderController.getAllOrdersForTable("ordersTable");
+                highlightCarsTable();
+                highlightMarksTable();
+                highlightOrdersTable();
+                
+                $("#insertCarForm").submit(insertCar);
+                $("#updateCarForm").submit(updateCar);
+                $("#deleteCarForm").submit(deleteCar);
+                
+                $("#insertMarkForm").submit(insertMarkImageNotNullCheck);
+                $("#insertMarkForm").submit(insertMark);
+                $("#updateMarkForm").submit(updateMark);
+                $("#deleteMarkForm").submit(deleteMark);
+                
+                $("#updateOrderForm").submit(updateOrder);
+                $("#deleteOrderForm").submit(deleteOrder);
+                
+                $("#carImageAdd").change(insertCarImageSizeCheck);
+                $("#carImageUpdate").change(updateCarImageSizeCheck);
+                $("#markImageInsert").change(insertMarkImageSizeCheck);
+                $("#markImageUpdate").change(updateMarkImageSizeCheck);
+            };
+    </script>
+    
+    </body>
+ </html>
